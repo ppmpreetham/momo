@@ -1,0 +1,24 @@
+# Security Policy
+
+Security is very important for Momos and its community. 🔒
+
+Learn more about it below. 👇
+
+## Reporting a Vulnerability
+
+If you think you found a vulnerability, and even if you are not sure about it, please report it right away by sending an email to: security@Momos.dev.  
+
+Please try to be as explicit as possible, describing all steps, example code, and environment setup to reproduce the security issue.  
+
+
+## Public Discussions
+
+Please restrain from publicly discussing a potential security vulnerability. 🙊
+
+It's better to discuss privately and try to find a solution first, to limit the potential impact as much as possible.
+
+---
+
+Thanks for your help!
+
+The Momos community and I thank you for that. 🙇
