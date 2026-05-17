@@ -4,5 +4,40 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+flume = "0.12.0"
+memmap2 = "0.9.10"
+ouroboros = "0.18.5"
 fs4 = "1.1.0"
+parking_lot = "0.12.5"
+
+# for parallelism
 jwalk = "0.8.1"
+sonic-rs = "0.5.8"
+rayon = "1.12.0"
+
+# parser
+oxc_allocator = "0.131.0"
+oxc_parser = "0.131.0"
+oxc_span = "0.131.0"
+oxc_ast = "0.131.0"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = "symbols" # set to false for debug informations
+debug = false # set to true for debug information
+panic = "abort" # let it crash and force ourselves to write safe rust
+
+
+[profile.coverage]
+inherits = "release"
+opt-level = 2 # compile faster
+codegen-units = 256 # compile faster
+lto = "thin" # Faster compile time with thin LTO
+debug-assertions = true # make sure debug_assert! pass
+overflow-checks = true # catch arithmetic overflow errors
+
+[profile.dev-no-debug-assertions]
+inherits = "dev"
+debug-assertions = false

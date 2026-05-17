@@ -2,6 +2,7 @@ use jwalk::{Parallelism::RayonDefaultPool, WalkDirGeneric};
 use std::ffi::OsStr;
 use std::path::Path;
 
+// standard test notations users use
 const TEST_EXTENSIONS: &[&[u8]] = &[
     b".test.js",
     b".test.ts",
@@ -16,18 +17,19 @@ const TEST_EXTENSIONS: &[&[u8]] = &[
     b"_test.jsx",
     b"_test.tsx",
 ];
+const IGNORED_DIRS: &[&[u8]] = &[b"node_modules", b".git", b"dist", b"coverage", b"target"];
 
 // find test files in proj
 // momo test login -> src/utils/login.test.ts
 // momo test controllers -> src/controllers/user.test.ts
-pub fn find_test_files(root_path: impl AsRef<Path>, cli_filter: Option<&str>) {
+pub fn find_test_files(root_path: impl AsRef<Path>, cli_filter: Option<&str>) -> Vec<PathBuf> {
     WalkDirGeneric::<()>::new(root_path)
         .skip_hidden(true)
         .parallelism(RayonDefaultPool)
         .process_read_dir(|_, _, _, children| {
             children.retain(|res| {
                 res.as_ref()
-                    .map_or(true, |e| e.file_name != OsStr::new("node_modules"))
+                    .map_or(true, |e| !IGNORED_DIRS.contains(&e.file_name.as_bytes()))
             });
         })
         .into_iter()
@@ -50,7 +52,5 @@ pub fn find_test_files(root_path: impl AsRef<Path>, cli_filter: Option<&str>) {
 
             Some(path)
         })
-        .for_each(|path| {
-            println!("Test file: {:?}", path);
-        });
+        .collect()
 }
