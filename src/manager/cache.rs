@@ -1,10 +1,10 @@
 #[derive(Eq, PartialEq)]
 pub enum Refresh {
-    /// Use cache if valid, fetch if missing.
+    /// use cache if valid, fetch if missing.
     Default,
-    /// `--force`: Disregard local cache manifests and force redownloading.
+    /// --force: Disregard local cache manifests and force redownloading.
     Force,
-    /// `--offline`: Strict offline mode. If a package is missing, throw an error immediately.
+    /// --offline: Strict offline mode. If a package is missing, throw an error immediately.
     Offline,
 }
 
