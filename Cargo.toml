@@ -20,6 +20,8 @@ oxc_allocator = "0.131.0"
 oxc_parser = "0.131.0"
 oxc_span = "0.131.0"
 oxc_ast = "0.131.0"
+clap = "4.6.1"
+anyhow = "1.0.102"
 
 [profile.release]
 opt-level = 3

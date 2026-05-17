@@ -6,7 +6,7 @@ use std::{
 };
 
 pub type Allocator = oxc_allocator::Allocator;
-pub type ParserReturn<'a> = oxc_parser::ParseReturn<'a>;
+pub type ParserReturn<'a> = oxc_parser::ParserReturn<'a>;
 pub type SourceType = oxc_span::SourceType;
 pub type Parser<'a> = oxc_parser::Parser<'a>;
 
@@ -22,6 +22,7 @@ pub struct WorkerContext {
     pub source: Vec<u8>,
     pub diagnostics: Vec<Diagnostic>,
     pub temp_paths: Vec<PathBuf>,
+    pub err_buf: String,
 }
 
 impl WorkerContext {
@@ -32,6 +33,7 @@ impl WorkerContext {
             source: Vec::with_capacity(DEFAULT_BUFFER_CAPACITY),
             diagnostics: Vec::with_capacity(32),
             temp_paths: Vec::with_capacity(32),
+            err_buf: String::with_capacity(256),
         };
 
         ctx.prepare_for_next_file();

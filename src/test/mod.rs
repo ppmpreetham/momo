@@ -1,5 +1,3 @@
-pub mod test;
-
 mod file;
 mod parse;
 
