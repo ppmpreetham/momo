@@ -3,21 +3,22 @@ use std::ffi::OsStr;
 use std::path::Path;
 
 // standard test notations users use
-const TEST_EXTENSIONS: &[&[u8]] = &[
-    b".test.js",
-    b".test.ts",
-    b".test.jsx",
-    b".test.tsx",
-    b".spec.js",
-    b".spec.ts",
-    b".spec.jsx",
-    b".spec.tsx",
-    b"_test.js",
-    b"_test.ts",
-    b"_test.jsx",
-    b"_test.tsx",
+const TEST_EXTENSIONS: &[&[u8]] = byte_slices![
+    ".test.js",
+    ".test.ts",
+    ".test.jsx",
+    ".test.tsx",
+    ".spec.js",
+    ".spec.ts",
+    ".spec.jsx",
+    ".spec.tsx",
+    "_test.js",
+    "_test.ts",
+    "_test.jsx",
+    "_test.tsx",
 ];
-const IGNORED_DIRS: &[&[u8]] = &[b"node_modules", b".git", b"dist", b"coverage", b"target"];
+
+const IGNORED_DIRS: &[&[u8]] = byte_slices!["node_modules", ".git", "dist", "coverage", "target"];
 
 // find test files in proj
 // momo test login -> src/utils/login.test.ts
