@@ -28,10 +28,18 @@ impl Cli {
         let start_time = Instant::now();
 
         match self.command {
+            // TODO: use Rolldown for build
+            // TODO: Wire up watch, minify, entry, outdir, outfile, target, format, and external flags here once they're implemented
             types::Commands::Build {
                 watch,
                 minify,
                 entry,
+                outdir,
+                outfile,
+                target,
+                format,
+                external,
+                ..
             } => {
                 println!("build");
             }
@@ -44,15 +52,19 @@ impl Cli {
                 println!("install");
             }
 
-            types::Commands::Run { file } => {
-                println!("run {file}");
+            types::Commands::Run { target, .. } => {
+                println!("run {target}");
             }
 
-            types::Commands::Test { filter } => {
+            // TODO: wire up filter, no_cache, number, all, watch, and log flags here once they're implemented
+            types::Commands::Test { filter, .. } => {
                 use crate::test::test;
                 if let Some(ref filter) = filter {
                     println!("Running tests matching: {filter}");
                 }
+
+                // TODO: implement no_cache(incremental BLAKE3), number, all, watch, and log flags here
+
                 test(filter.as_deref());
             }
 
