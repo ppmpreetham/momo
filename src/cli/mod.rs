@@ -13,6 +13,7 @@ use std::time::Instant;
     propagate_version = true,
     styles = styles::STYLES,
     color = clap::ColorChoice::Always,
+    arg_required_else_help = true
 )]
 pub struct Cli {
     #[command(flatten)]

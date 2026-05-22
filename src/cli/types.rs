@@ -17,7 +17,7 @@ pub struct GlobalArgs {
 #[derive(Subcommand, Clone, Debug)]
 pub enum Commands {
     /// Bundle JS and TS files
-    #[command(visible_alias = "b")]
+    #[command(alias = "b")]
     Build {
         #[arg(short, long)]
         watch: bool,
@@ -30,31 +30,32 @@ pub enum Commands {
     },
 
     /// Run benchmarks
-    #[command(visible_alias = "be")]
+    #[command(alias = "be")]
     Bench,
 
     /// Initialize a new project
     Init,
 
     /// Install dependencies
-    #[command(visible_alias = "i")]
+    #[command(alias = "i")]
     Install,
 
     /// Run a JS/TS file
     Run { file: String },
 
     /// Test JS/TS files
-    #[command(visible_alias = "t")]
-    Test {
-        // #[arg(short, long)]
-        filter: Option<String>,
-    },
+    #[command(alias = "t")]
+    Test { filter: Option<String> },
 
-    #[command(visible_alias = "upd")]
+    /// Update all the globally installed packages
+    #[command(alias = "upd")]
     Update,
-    #[command(visible_alias = "upg")]
+
+    /// Upgrade Momo to the latest version    
+    #[command(alias = "upg")]
     Upgrade,
 
+    /// Display version information
     Version {
         #[arg(short, long, value_enum, default_value = "text")]
         format: VersionFormat,
