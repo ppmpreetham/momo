@@ -3,6 +3,7 @@ use std::{
     fs::File,
     io::Read,
     path::{Path, PathBuf},
+    sync::Arc,
 };
 
 pub type Allocator = oxc_allocator::Allocator;
@@ -77,14 +78,29 @@ fn read_and_parse<'a>(path: &Path, ctx: &'a mut WorkerContext) -> Result<ParserR
 
     let parsed = Parser::new(&ctx.allocator, source, source_type).parse();
 
-    if parsed.panicked {
-        return Err("Parser panicked".into());
-    }
-
     if !parsed.errors.is_empty() {
+        let source_arc: Arc<str> = Arc::from(source);
+        let source_service =
+            oxc_diagnostics::NamedSource::new(path.to_string_lossy().into_owned(), source_arc);
+
+        let error_messages: Vec<String> = parsed
+            .errors
+            .into_iter()
+            .map(|err| {
+                let enriched_error = err.with_source_code(source_service.clone());
+                format!("{enriched_error:?}")
+            })
+            .collect();
+
+        let prefix = if parsed.panicked {
+            "Parser Panicked:\n"
+        } else {
+            ""
+        };
         return Err(fmt_err(format_args!(
-            "{} syntax errors encountered",
-            parsed.errors.len()
+            "{}{}",
+            prefix,
+            error_messages.join("\n")
         )));
     }
 

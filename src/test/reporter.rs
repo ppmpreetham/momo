@@ -61,6 +61,6 @@ impl ConsoleReporter {
             path_display
         );
 
-        println!("{:<8}{}", "", format!("> {}", failure.error).red());
+        println!("> {}", failure.error.red());
     }
 }

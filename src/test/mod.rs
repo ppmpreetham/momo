@@ -31,7 +31,6 @@ pub fn test(cli_test_filter: Option<&str>) {
             failed_count.fetch_add(1, Ordering::Relaxed);
             errors.lock().push(TestFailure {
                 path: path.to_path_buf(),
-                // TODO: put actual error message here instead of just "Parser panicked"
                 error: err.to_string(),
             });
         },
