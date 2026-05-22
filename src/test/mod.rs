@@ -1,21 +1,51 @@
 mod file;
 mod parse;
+mod reporter;
+mod types;
 
 use file::find_test_files;
 use parse::parse_all_files;
 
-pub fn test() {
-    let files = find_test_files("./vitest", None);
+use owo_colors::OwoColorize;
+use parking_lot::Mutex;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
-    println!("Collected {} test files", files.len(),);
+use crate::test::types::{TestFailure, TestReport};
+
+pub fn test(cli_test_filter: Option<&str>) {
+    let files = find_test_files(".", cli_test_filter);
+    let total_files = files.len();
+
+    println!(
+        "{}\n",
+        format!("Found {total_files} files. Testing them...",).bright_black()
+    );
+
+    let failed_count = AtomicUsize::new(0);
+    let errors = Mutex::new(Vec::new());
 
     parse_all_files(
         files,
-        |path, ast| {
-            println!("{:?} -> {} top-level nodes", path, ast.program.body.len(),);
-        },
+        |_path, _ast| {},
         |path, err| {
-            eprintln!("ERROR {:?}: {}", path, err,);
+            failed_count.fetch_add(1, Ordering::Relaxed);
+            errors.lock().push(TestFailure {
+                path: path.to_path_buf(),
+                // TODO: put actual error message here instead of just "Parser panicked"
+                error: err.to_string(),
+            });
         },
     );
+
+    let total_failed = failed_count.load(Ordering::Relaxed);
+    let total_passed = total_files - total_failed;
+
+    let report = TestReport {
+        total_files,
+        total_failed,
+        total_passed,
+        failures: errors.into_inner(),
+    };
+
+    reporter::ConsoleReporter::print_summary(&report);
 }

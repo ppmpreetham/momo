@@ -47,10 +47,12 @@ impl Cli {
                 println!("run {file}");
             }
 
-            types::Commands::Test { watch } => {
-                println!("test {watch}");
+            types::Commands::Test { filter } => {
                 use crate::test::test;
-                test();
+                if let Some(ref filter) = filter {
+                    println!("Running tests matching: {filter}");
+                }
+                test(filter.as_deref());
             }
 
             types::Commands::Version { format } => {

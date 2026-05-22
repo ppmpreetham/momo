@@ -471,6 +471,7 @@ dependencies = [
  "jwalk",
  "memmap2",
  "ouroboros",
+ "owo-colors",
  "oxc_allocator",
  "oxc_ast",
  "oxc_parser",

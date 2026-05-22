@@ -41,18 +41,20 @@ pub enum Commands {
     Install,
 
     /// Run a JS/TS file
-    Run {
-        file: String,
-    },
+    Run { file: String },
 
     /// Test JS/TS files
+    #[command(visible_alias = "t")]
     Test {
-        #[arg(short, long)]
-        watch: bool,
+        // #[arg(short, long)]
+        filter: Option<String>,
     },
 
+    #[command(visible_alias = "upd")]
     Update,
+    #[command(visible_alias = "upg")]
     Upgrade,
+
     Version {
         #[arg(short, long, value_enum, default_value = "text")]
         format: VersionFormat,
