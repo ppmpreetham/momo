@@ -461,7 +461,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "momos"
+name = "momo"
 version = "0.1.0"
 dependencies = [
  "anyhow",

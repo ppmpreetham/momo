@@ -21,4 +21,4 @@ It's better to discuss privately and try to find a solution first, to limit the 
 
 Thanks for your help!
 
-The Momos community and I thank you for that. 🙇
+The Momo community and I thank you for that. 🙇
