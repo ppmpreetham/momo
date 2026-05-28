@@ -35,6 +35,7 @@ pub fn test(cli_test_filter: Option<&str>) {
             });
         },
     );
+    // TODO: do dynamic analysis (using JSC) for files that are statically analyzable.
 
     let total_failed = failed_count.load(Ordering::Relaxed);
     let total_passed = total_files - total_failed;
