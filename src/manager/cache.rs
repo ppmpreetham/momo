@@ -7,9 +7,12 @@ use std::path::{Component, Path, PathBuf};
 use std::sync::Arc;
 use std::sync::OnceLock;
 
-const STRATEGY_COPY: u8 = 3;
-const STRATEGY_HARDLINK: u8 = 2;
-const STRATEGY_REFLINK: u8 = 1;
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum LinkStrategy {
+    Reflink,
+    Hardlink,
+    Copy,
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Refresh {
@@ -174,7 +177,7 @@ impl Cache {
 pub struct ContentAddressableStore {
     root: PathBuf,
     durability: Durability,
-    link_strategy: OnceLock<u8>,
+    link_strategy: OnceLock<LinkStrategy>,
 }
 
 impl ContentAddressableStore {
@@ -183,25 +186,26 @@ impl ContentAddressableStore {
         self.root.join(package_key(package_id))
     }
 
-    fn get_strategy(&self) -> u8 {
+    fn get_strategy(&self) -> LinkStrategy {
         *self.link_strategy.get_or_init(|| {
             let probe_src = self.root.join(format!(".probe_src_{}", random_suffix()));
             let probe_dst = self.root.join(format!(".probe_dst_{}", random_suffix()));
 
             if std::fs::write(&probe_src, b"ok").is_err() {
-                return STRATEGY_COPY;
+                return LinkStrategy::Copy;
             }
 
             let strat = if reflink_copy::reflink(&probe_src, &probe_dst).is_ok() {
-                STRATEGY_REFLINK
+                LinkStrategy::Reflink
             } else if hard_link(&probe_src, &probe_dst).is_ok() {
-                STRATEGY_HARDLINK
+                LinkStrategy::Hardlink
             } else {
-                STRATEGY_COPY
+                LinkStrategy::Copy
             };
 
             let _ = std::fs::remove_file(&probe_dst);
             let _ = std::fs::remove_file(&probe_src);
+
             strat
         })
     }
@@ -319,17 +323,19 @@ impl ContentAddressableStore {
 
         files.into_par_iter().try_for_each(|(src_p, dst_p)| {
             match strategy {
-                STRATEGY_REFLINK => {
+                LinkStrategy::Reflink => {
                     if reflink_copy::reflink(&src_p, &dst_p).is_err() {
                         copy(&src_p, &dst_p)?;
                     }
                 }
-                STRATEGY_HARDLINK => {
+
+                LinkStrategy::Hardlink => {
                     if hard_link(&src_p, &dst_p).is_err() {
                         copy(&src_p, &dst_p)?;
                     }
                 }
-                _ => {
+
+                LinkStrategy::Copy => {
                     copy(&src_p, &dst_p)?;
                 }
             }
