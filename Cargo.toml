@@ -24,13 +24,20 @@ clap = {version="4.6.1", features = ["derive", "string"] }
 anyhow = "1.0.102"
 owo-colors = "4.3.0"
 oxc_diagnostics = "0.132.0"
+blake3 = "1.8.5"
+flate2 = "1.1.9"
+tempfile = "3.27.0"
+fd-lock = "4.0.4"
+rand = "0.10.1"
+reflink-copy = "0.1.29"
+dhat = "0.3.3"
 
 [profile.release]
 opt-level = 3
 lto = "fat"
 codegen-units = 1
 strip = "symbols" # set to false for debug informations
-debug = false # set to true for debug information
+debug = true # set to true for debug information
 panic = "abort" # let it crash and force ourselves to write safe rust
 
 
@@ -45,3 +52,6 @@ overflow-checks = true # catch arithmetic overflow errors
 [profile.dev-no-debug-assertions]
 inherits = "dev"
 debug-assertions = false
+
+[features]
+dhat-heap = []
